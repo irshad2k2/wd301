@@ -15,9 +15,9 @@ class TaskForm extends React.Component<TaskFormProps, TaskFormState> {
     constructor(props: TaskFormProps) {
         super(props);
         this.state = {
-            title: '0',
-            description: 'des',
-            dueDate: "1997-01-01",
+            title: 'title',
+            description: 'description',
+            dueDate: "1947-08-15",
         }
     }
     render() {
