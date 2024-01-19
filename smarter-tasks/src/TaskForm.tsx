@@ -2,60 +2,84 @@ import React from "react";
 import { TaskItem } from "./types";
 
 interface TaskFormProps {
-addTask: (task:TaskItem) => void
+  addTask: (task: TaskItem) => void;
 }
 
 interface TaskFormState {
-    title: string;
-    description: string;
-    dueDate: any;
+  title: string;
+  description: string;
+  dueDate: any;
 }
 
-class TaskForm extends React.Component<TaskFormProps, TaskFormState> {
-    constructor(props: TaskFormProps) {
-        super(props);
-        this.state = {
-            title: 'title',
-            description: 'description',
-            dueDate: "1947-08-15",
-        }
-    }
-    render() {
-        return (
-            <div>
-                <form className="form" onSubmit={this.addTask}>
-                    <input id="todoTitle" type="text" placeholder={this.state.title} onChange={this.titleChanged} required /> <br />
-                    <input  type="text" id="todoDescription" placeholder={this.state.description} onChange={this.descriptionChanged} /> <br />
-                    <input type="date" id="todoDueDate" placeholder={this.state.dueDate} onChange={this.dueDateChanged} required /> <br />
-                    <button type="submit" id="addTaskButton">Add Task</button>
-                </form>
-            </div>
-        )
-    }
-    addTask: React.FormEventHandler<HTMLFormElement> = (event) => {
-        event.preventDefault();
-        const newTask = {
-            title: this.state.title,
-            description: this.state.description,
-            dueDate: this.state.dueDate,
-        }
-        this.props.addTask(newTask);
-        this.setState({title: ""});
-        console.log(`Submitted the form! with ${this.state.title} and ${this.state.description} and ${this.state.dueDate}`);
-    };
+const TaskForm = (props: TaskFormProps) => {
+  const [formState, setFormState] = React.useState<TaskFormState>({
+    title: "",
+    description: "",
+    dueDate: "",
+  });
 
-    titleChanged: React.ChangeEventHandler<HTMLInputElement> = (event) => {
-        console.log(`${event.target.value}`);
-        this.setState({title: event.target.value})
-    }
+  const titleChanged: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+    setFormState({ ...formState, title: event.target.value });
+  };
 
-    descriptionChanged: React.ChangeEventHandler<HTMLInputElement> = (event) => {
-        this.setState({description: event.target.value})
-    }
+  const descriptionChanged: React.ChangeEventHandler<HTMLInputElement> = (
+    event
+  ) => {
+    setFormState({ ...formState, description: event.target.value });
+  };
 
-    dueDateChanged: React.ChangeEventHandler<HTMLInputElement> = (event) => {
-        this.setState({dueDate: event.target.value})
+  const dueDateChanged: React.ChangeEventHandler<HTMLInputElement> = (
+    event
+  ) => {
+    setFormState({ ...formState, dueDate: event.target.value });
+  };
+
+  const addTask: React.FormEventHandler<HTMLFormElement> = (event) => {
+    event.preventDefault();
+    console.log(`Submitted the form with`);
+    if (formState.title.length === 0 || formState.dueDate.length === 0) {
+      return;
     }
-}
+    props.addTask(formState);
+    setFormState({ title: "", description: "", dueDate: "" });
+  };
+
+  return (
+    <>
+      <form onSubmit={addTask}>
+        <label htmlFor="todoTitle">Title: </label>
+        <input
+          id="todoTitle"
+          type="text"
+          value={formState.title}
+          onChange={titleChanged}
+          required
+        />
+        <br />
+        <br />
+        <label htmlFor="todoDescription">Description: </label>
+        <input
+          type="text"
+          id="todoDescription"
+          value={formState.description}
+          onChange={descriptionChanged}
+        />
+        <br />
+        <br />
+        <label htmlFor="todoDueDate">Due Date: </label>
+        <input
+          type="date"
+          id="todoDueDate"
+          value={formState.dueDate}
+          onChange={dueDateChanged}
+          required
+        />
+        <br />
+        <br />
+        <button type="submit">Add Task</button>
+      </form>
+    </>
+  );
+};
 
 export default TaskForm;
