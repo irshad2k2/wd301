@@ -76,7 +76,7 @@ const TaskForm = (props: TaskFormProps) => {
         />
         <br />
         <br />
-        <button type="submit">Add Task</button>
+        <button id="addTaskButton" type="submit">Add Task</button>
       </form>
     </>
   );

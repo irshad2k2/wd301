@@ -1,19 +1,28 @@
-import React from "react";
 import { TaskItem } from "./types";
 import TaskForm from "./TaskForm";
 import TaskList from "./TaskList";
+import { useLocalStorage } from "./hooks/useLocalStorage";
 
 interface TaskAppState {
   tasks: TaskItem[];
 }
 
 const TaskApp = () => {
-  const [taskAppState, setTaskAppState] = React.useState<TaskAppState>({
-    tasks: [],
-  });
+  const [taskAppState, setTaskAppState] = useLocalStorage<TaskAppState>(
+    "tasks",
+    {
+      tasks: [],
+    }
+  );
 
   const addTask = (task: TaskItem) => {
     setTaskAppState({ tasks: [...taskAppState.tasks, task] });
+  };
+
+  const handleDeleteTask = (index: number) => {
+    const newTasks = [...taskAppState.tasks];
+    newTasks.splice(index, 1);
+    setTaskAppState({ tasks: newTasks });
   };
 
   return (
@@ -30,7 +39,7 @@ const TaskApp = () => {
           </h1>
 
           <TaskForm addTask={addTask} />
-          <TaskList tasks={taskAppState.tasks} />
+          <TaskList tasks={taskAppState.tasks} onDeleteTask={handleDeleteTask} />
         </div>
       </div>
     </div>
