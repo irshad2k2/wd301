@@ -1,5 +1,4 @@
 import './App.css'
-import TaskApp from './TaskApp'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import HomePage from './pages/HomePage'
 import TaskListPage from './pages/TaskListPage'
