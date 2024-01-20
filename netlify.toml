@@ -1,4 +1,4 @@
 [[redirects]]
-  from = "smarter-tasks/*"
+  from = "/smarter-tasks/*"
   to = "/index.html"
   status = 200
