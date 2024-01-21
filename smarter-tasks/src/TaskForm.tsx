@@ -8,7 +8,7 @@ interface TaskFormProps {
 interface TaskFormState {
   title: string;
   description: string;
-  dueDate: any;
+  dueDate: string;
 }
 
 const TaskForm = (props: TaskFormProps) => {
@@ -76,7 +76,9 @@ const TaskForm = (props: TaskFormProps) => {
         />
         <br />
         <br />
-        <button id="addTaskButton" type="submit">Add Task</button>
+        <button id="addTaskButton" type="submit">
+          Add Task
+        </button>
       </form>
     </>
   );

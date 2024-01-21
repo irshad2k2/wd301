@@ -39,7 +39,10 @@ const TaskApp = () => {
           </h1>
 
           <TaskForm addTask={addTask} />
-          <TaskList tasks={taskAppState.tasks} onDeleteTask={handleDeleteTask} />
+          <TaskList
+            tasks={taskAppState.tasks}
+            onDeleteTask={handleDeleteTask}
+          />
         </div>
       </div>
     </div>
