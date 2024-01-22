@@ -1,7 +1,7 @@
 import React from "react";
 const Notfound: React.FC = () => {
   const redirectToHome = () => {
-    window.location.href = "/";
+    window.location.href="/home"
   };
   return (
     <div>

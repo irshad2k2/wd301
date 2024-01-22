@@ -18,10 +18,6 @@ const router = createBrowserRouter([
     element: <Navigate to="/signin" replace></Navigate>,
   },
   {
-    path: "/signin",
-    element: <Signin></Signin>,
-  },
-  {
     path: "/*",
     element: <Navigate to="/notfound" replace></Navigate>,
   },
@@ -30,11 +26,17 @@ const router = createBrowserRouter([
     element: <Notfound></Notfound>,
   },
   {
+    path: "/signin",
+    element: <Signin></Signin>,
+  },
+
+  {
     element: (
       <ProtectedRoute>
         <Layout></Layout>
       </ProtectedRoute>
     ),
+
     children: [
       {
         path: "home",

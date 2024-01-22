@@ -9,6 +9,6 @@ export default function ProtectedRoute({
   if (authenticated === "true") {
     return <>{children}</>;
   } else {
-    return <Navigate to="/signin" />;
+    return <Navigate to="/signin" replace />;
   }
 }
