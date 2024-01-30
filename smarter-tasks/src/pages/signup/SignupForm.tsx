@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useState } from "react";
 import { API_ENDPOINT } from "../../config/constants";
 import { useNavigate } from "react-router-dom";
 
