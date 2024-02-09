@@ -41,6 +41,7 @@ const SigninForm: React.FC = () => {
         <label className="block text-gray-700 font-semibold mb-2">Email:</label>
         <input
           type="email"
+          id="email"
           {...register("email")}
           className="w-full border rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500 focus:shadow-outline-blue"
         />
@@ -51,6 +52,7 @@ const SigninForm: React.FC = () => {
         </label>
         <input
           type="password"
+          id="password"
           {...register("password")}
           className="w-full border rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500 focus:shadow-outline-blue"
         />

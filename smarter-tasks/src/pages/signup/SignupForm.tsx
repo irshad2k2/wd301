@@ -43,6 +43,7 @@ const SignupForm: React.FC = () => {
         <label className="block text-gray-700 font-semibold mb-2">Organisation Name:</label>
         <input
           type="text"
+          id="organisationName"
           {...register("name")}
           className="w-full border rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500 focus:shadow-outline-blue"
         />
@@ -51,6 +52,7 @@ const SignupForm: React.FC = () => {
         <label className="block text-gray-700 font-semibold mb-2">Your Name:</label>
         <input
           type="text"
+          id="userName"
           {...register("user_name")}
           className="w-full border rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500 focus:shadow-outline-blue"
         />
@@ -59,6 +61,7 @@ const SignupForm: React.FC = () => {
         <label className="block text-gray-700 font-semibold mb-2">Email:</label>
         <input
           type="email"
+          id="userEmail"
           {...register("email")}
           className="w-full border rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500 focus:shadow-outline-blue"
         />
@@ -67,6 +70,7 @@ const SignupForm: React.FC = () => {
         <label className="block text-gray-700 font-semibold mb-2">Password:</label>
         <input
           type="password"
+          id="userPassword"
           {...register("password")}
           className="w-full border rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500 focus:shadow-outline-blue"
         />
