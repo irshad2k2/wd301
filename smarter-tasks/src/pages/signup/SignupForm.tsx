@@ -1,4 +1,4 @@
-import React, {useState } from "react";
+import React, { useState } from "react";
 import { API_ENDPOINT } from "../../config/constants";
 import { useNavigate } from "react-router-dom";
 
@@ -34,7 +34,7 @@ const SignupForm: React.FC = () => {
       localStorage.setItem("userData", JSON.stringify(data.user));
 
       console.log("Sign-up successful");
-      navigate("/dashboard");
+      navigate("/account");
     } catch (error) {
       console.error("Sign-up failed:", error);
     }
