@@ -16,18 +16,18 @@ const classNames = (...classes: string[]): string =>
 const Appbar = () => {
   const { pathname } = useLocation();
 
-  const { theme, setTheme } = useContext(ThemeContext)
-  const [enabled, setEnabled] = useState(theme === 'dark');
+  const { theme, setTheme } = useContext(ThemeContext);
+  const [enabled, setEnabled] = useState(theme === "dark");
   const toggleTheme = () => {
-    let newTheme = ''
-    if (theme === 'light') {
-      newTheme = 'dark'
+    let newTheme = "";
+    if (theme === "light") {
+      newTheme = "dark";
     } else {
-      newTheme = 'light'
+      newTheme = "light";
     }
-    setEnabled(!enabled)
-    setTheme(newTheme)
-  }
+    setEnabled(!enabled);
+    setTheme(newTheme);
+  };
 
   const navigation = [
     { name: "Projects", href: "/account/projects", current: false },
@@ -37,7 +37,7 @@ const Appbar = () => {
   return (
     <>
       <Disclosure as="nav" className="border-b border-slate-200">
-        {({ open }) => (
+        {({}) => (
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 items-center justify-between">
               <div className="flex items-center">
