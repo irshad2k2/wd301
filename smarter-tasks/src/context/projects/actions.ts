@@ -41,7 +41,6 @@ export const fetchProjects = async (dispatch: any) => {
       }
   
       dispatch({ type: 'ADD_PROJECT_SUCCESS', payload: data });
-
       return { ok: true }
     } catch (error) {
       console.error('Operation failed:', error);

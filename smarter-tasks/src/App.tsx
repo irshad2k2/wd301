@@ -4,6 +4,7 @@ import { useContext } from "react";
 import router from "./routes";
 import { ThemeContext } from "./context/theme";
 import { ProjectsProvider } from "./context/projects/context";
+import { MembersProvider } from "./context/members/context";
 
 function App() {
   const { theme } = useContext(ThemeContext);
@@ -12,10 +13,11 @@ function App() {
     <div
       className={`h-screen w-full mx-auto py-2 ${theme === "dark" ? "dark" : ""}`}
     >
-      {theme}
-      <ProjectsProvider>
-        <RouterProvider router={router}></RouterProvider>
-      </ProjectsProvider>
+      <MembersProvider>
+        <ProjectsProvider>
+          <RouterProvider router={router}></RouterProvider>
+        </ProjectsProvider>
+      </MembersProvider>
     </div>
   );
 }

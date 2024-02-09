@@ -9,8 +9,6 @@ const ProjectsDispatchContext = createContext<ProjectsDispatch | undefined>(unde
 export const ProjectsProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  // Next, I'll pass the `dispatch` object as value of this ProjectsDispatchContext.
-
   return (
     <ProjectsStateContext.Provider value={state}>
       <ProjectsDispatchContext.Provider value={dispatch}>

@@ -7,6 +7,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import Projects from "../pages/projects";
 import Members from "../pages/members";
 import Logout from "../pages/logout";
+import NotFound from "../pages/notFound";
 
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/account/projects" replace /> },
@@ -26,6 +27,15 @@ const router = createBrowserRouter([
     path: "/logout",
     element: <Logout></Logout>,
   },
+  {
+    path: "/notfound",
+    element: <NotFound></NotFound>
+  },
+  {
+    path: "*",
+    element: <NotFound></NotFound>
+  },
+
   // protected route
   {
     path: "account",
