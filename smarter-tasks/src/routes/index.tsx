@@ -3,11 +3,11 @@ import { Navigate, createBrowserRouter } from "react-router-dom";
 import Signin from "../pages/signin";
 import Signup from "../pages/signup";
 import AccountLayout from "../layouts/account";
-import ProtectedRoute from "./ProtectedRoute";
+import ProtectedRoute from "./ProtectedRoutes";
 import Projects from "../pages/projects";
 import Members from "../pages/members";
 import Logout from "../pages/logout";
-import NotFound from "../pages/notFound";
+import NotFound from "../pages/Notfound";
 
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/account/projects" replace /> },
