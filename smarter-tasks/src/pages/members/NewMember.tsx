@@ -1,55 +1,62 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
+
 import { useForm, SubmitHandler } from "react-hook-form";
+import { addUser } from "../../context/members/actions";
+import { useUsersDispatch } from "../../context/members/context";
 
-import { addMember } from "../../context/members/actions";
-
-import { useMembersDispatch } from "../../context/members/context";
 type Inputs = {
-  name: string;
   email: string;
-  password: any;
+  name: string;
+  password: string;
 };
+
 const NewMember = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [error, setError] = useState<null | string>(null);
 
-  const [error, setError] = useState(null);
-
-  const dispatchMembers = useMembersDispatch();
+  const dispatchUsers = useUsersDispatch();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>();
+
   const closeModal = () => {
     setIsOpen(false);
   };
+
   const openModal = () => {
     setIsOpen(true);
   };
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    const {name, email, password} = data;
 
-    const response = await addMember(dispatchMembers,name,email,password);
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    const { name, email, password } = data;
+    const response = await addUser(dispatchUsers, { name, email, password });
 
     if (response.ok) {
       setIsOpen(false);
     } else {
-      setError(response.error as React.SetStateAction<null>);
+      setError(response.error as string);
     }
   };
+
   return (
     <>
       <button
         type="button"
-        id = "new-member-btn"
         onClick={openModal}
+        id="new-member-btn"
         className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
       >
         New Member
       </button>
       <Transition appear show={isOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={closeModal}>
+        <Dialog
+          as="div"
+          className="relative z-10"
+          onClose={closeModal}
+        >
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -72,50 +79,47 @@ const NewMember = () => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-blue-100 p-6 text-left align-middle shadow-xl transition-all">
                   <Dialog.Title
                     as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900"
+                    className="text-lg font-medium leading-6 text-blue-900"
                   >
-                    Create new Member
+                    Create New Member
                   </Dialog.Title>
                   <div className="mt-2">
                     <form onSubmit={handleSubmit(onSubmit)}>
-                      {/* I'll show the error, if it exists.*/}
-                      {error && <span>{error}</span>}
+                      {error && <span className="text-red-500">{error}</span>}
                       <input
                         type="text"
                         id="name"
-                        placeholder="Enter Member name..."
+                        placeholder="Enter name here"
                         autoFocus
                         {...register("name", { required: true })}
                         className={`w-full border rounded-md py-2 px-3 my-4 text-gray-700 leading-tight focus:outline-none focus:border-blue-500 focus:shadow-outline-blue ${
                           errors.name ? "border-red-500" : ""
                         }`}
                       />
-                      {errors.name && <span>This field is required</span>}
                       <input
                         type="email"
                         id="email"
-                        placeholder="Enter Member email..."
+                        placeholder="Enter email here"
                         autoFocus
                         {...register("email", { required: true })}
                         className={`w-full border rounded-md py-2 px-3 my-4 text-gray-700 leading-tight focus:outline-none focus:border-blue-500 focus:shadow-outline-blue ${
                           errors.email ? "border-red-500" : ""
                         }`}
                       />
-                      {errors.email && <span>This field is required</span>}
                       <input
                         type="password"
                         id="password"
-                        placeholder="Enter Member password..."
+                        placeholder="Enter password here"
                         autoFocus
                         {...register("password", { required: true })}
                         className={`w-full border rounded-md py-2 px-3 my-4 text-gray-700 leading-tight focus:outline-none focus:border-blue-500 focus:shadow-outline-blue ${
                           errors.password ? "border-red-500" : ""
                         }`}
                       />
-                      {errors.password && <span>This field is required</span>}
+                      {errors.name && <span>This field is required</span>}
                       <button
                         type="submit"
                         id="create-member-btn"
@@ -141,4 +145,5 @@ const NewMember = () => {
     </>
   );
 };
+
 export default NewMember;

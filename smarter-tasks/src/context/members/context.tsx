@@ -1,23 +1,24 @@
+import { reducer, initialState, UsersState, UsersActions } from "./reducer";
 import React, { createContext, useContext, useReducer } from "react";
-import { reducer, initialState, MembersState, MembersActions } from "./reducer";
 
-const MembersStateContext = createContext<MembersState | undefined>(undefined);
-type MembersDispatch = React.Dispatch<MembersActions>;
+const UsersStateContext = createContext<UsersState | undefined>(undefined);
+      type UsersDispatch = React.Dispatch<UsersActions>;
+const UsersDispatchContext = createContext<UsersDispatch | undefined>(undefined);
 
-
-const MembersDispatchContext = createContext<MembersDispatch | undefined>(undefined);
-export const MembersProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
+export const UsersProvider: React.FC<React.PropsWithChildren> = ({
+  children,
+}) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-
   return (
-    <MembersStateContext.Provider value={state}>
-      <MembersDispatchContext.Provider value={dispatch}>
+    <UsersStateContext.Provider value={state}>
+      <UsersDispatchContext.Provider value={dispatch}>
+
         {children}
-      </MembersDispatchContext.Provider>
-    </MembersStateContext.Provider>
+
+      </UsersDispatchContext.Provider>
+    </UsersStateContext.Provider>
   );
 };
 
-export const useMembersState = () => useContext(MembersStateContext);
-export const useMembersDispatch = () => useContext(MembersDispatchContext);
-
+export const useUsersState = () => useContext(UsersStateContext);
+export const useUsersDispatch = () => useContext(UsersDispatchContext);

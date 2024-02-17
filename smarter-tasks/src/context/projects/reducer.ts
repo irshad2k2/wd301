@@ -2,12 +2,19 @@ interface Project {
   id: number;
   name: string;
 }
+
 export interface ProjectsState {
   projects: Project[];
   isLoading: boolean;
   isError: boolean;
   errorMessage: string;
 }
+
+export type ProjectsActions =
+  | { type: "FETCH_PROJECTS_REQUEST" }
+  | { type: "FETCH_PROJECTS_SUCCESS"; payload: Project[] }
+  | { type: "FETCH_PROJECTS_FAILURE"; payload: string }
+  | { type: "ADD_PROJECT_SUCCESS"; payload: Project };
 export const initialState: ProjectsState = {
   projects: [],
   isLoading: false,
@@ -15,14 +22,8 @@ export const initialState: ProjectsState = {
   errorMessage: "",
 };
 
-export type ProjectsActions =
-  | { type: "FETCH_PROJECTS_REQUEST" }
-  | { type: "FETCH_PROJECTS_SUCCESS"; payload: Project[] }
-  | { type: "FETCH_PROJECTS_FAILURE"; payload: string }
-  | { type: "ADD_PROJECT_SUCCESS"; payload: Project };
-
 export const reducer = (
-  state: ProjectsState,
+  state: ProjectsState = initialState,
   action: ProjectsActions
 ): ProjectsState => {
   switch (action.type) {
@@ -40,7 +41,7 @@ export const reducer = (
     case "FETCH_PROJECTS_FAILURE":
       return {
         ...state,
-        isLoading: true,
+        isLoading: false,
         isError: true,
         errorMessage: action.payload,
       };
