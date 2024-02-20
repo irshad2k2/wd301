@@ -1,6 +1,6 @@
 import React from "react";
 import AccountLayout from "../layouts/account";
-import ProtectedRoute from "./ProtectedRoutes";
+import ProtectedRoute from "./ProtectedRoute";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import Notfound from "../pages/Notfound";
 import ProjectContainer from "../pages/projects/ProjectContainer";
