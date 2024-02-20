@@ -22,7 +22,7 @@ const initialData: ProjectData = {
     "1": {
       id: 1,
       title: "Sample Task",
-      description: "Sample description about the task which is to be completed in 3 days",
+      description: "Sample description about the task which is to be completed",
       dueDate: "",
       state: "in_progress",
       assignee: undefined,
@@ -31,21 +31,12 @@ const initialData: ProjectData = {
     "2": {
       id: 2,
       title: "Another Sample Task",
-      description: "Sample description about the task which is to be completed in 4 days",
+      description: "Sample description about the task which is to be completed",
       dueDate: "",
       state: "pending",
       assignee: undefined,
       assignedUserName: undefined
     },
-    "3": {
-      id: 3,
-      title: "Yet Another Sample Task",
-      description: "Sample description about the task which is to be completed in 5 days",
-      dueDate: "",
-      state: "done",
-      assignee: undefined,
-      assignedUserName: undefined
-    }
   },
   columnOrder: ["pending", "in_progress", "done"],
 };

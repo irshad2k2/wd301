@@ -1,45 +1,37 @@
-import React from "react";
-import AccountLayout from "../layouts/account";
-import ProtectedRoute from "./ProtectedRoute";
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import Notfound from "../pages/Notfound";
+import AccountLayout from "../layouts/account"
+import Signin from "../pages/signin"
+import Signup from "../pages/signup"
+import ProtectedRoute from "./ProtectedRoute"
+import Projects from "../pages/projects"
+import Members from "../pages/members"
+import Logout from "../pages/logout";
+import NewTask from "../pages/tasks/NewTask";
+import ProjectDetails from "../pages/project_details";
 import ProjectContainer from "../pages/projects/ProjectContainer";
-const Signin = React.lazy(() => import("../pages/signin"));
-const Signup = React.lazy(() => import("../pages/signup"));
-const Projects = React.lazy(() => import("../pages/projects"));
-const Members = React.lazy(() => import("../pages/members"));
-const Logout = React.lazy(() => import("../pages/logout"));
-const ProjectDetails = React.lazy(() => import("../pages/project_details"));
-const NewTask = React.lazy(() => import("../pages/tasks/NewTask"));
-const TaskDetailsContainer = React.lazy(
-  () => import("../pages/tasks/TaskDetailsContainer")
-);
+import NotFound from "../pages/Notfound";
+import TaskDetailsContainer from "../pages/tasks/TaskDetailsContainer";
 
 const router = createBrowserRouter([
-  { path: "/", element: <Navigate to="/account/projects" replace /> },
   {
-    path: "/notfound",
-    element: <Notfound />,
-  },
-  {
-    path: "/logout",
-    element: <Logout />,
-  },
-  {
-    path: "*",
-    element: <Notfound />,
+    path: "/",
+    element: <Navigate to="/account/projects" replace />
   },
   {
     path: "/signin",
-    element: <Signin />,
-  },
-  {
-    path: "/signin",
-    element: <Signin />,
+    element: <Signin />
   },
   {
     path: "/signup",
-    element: <Signup />,
+    element: <Signup />
+  },
+  {
+    path: "/logout",
+    element: <Logout />
+  },
+  {
+    path: "*",
+    element: <NotFound />
   },
   {
     path: "account",
@@ -48,9 +40,11 @@ const router = createBrowserRouter([
         <AccountLayout />
       </ProtectedRoute>
     ),
-    ErrorBoundary: () => <>Failed to load the page</>,
     children: [
-      { index: true, element: <Navigate to="/account/projects" replace /> },
+      {
+        index: true,
+        element: <Navigate to="/account/projects" replace />
+      },
       {
         path: "projects",
         element: <ProjectContainer />,
@@ -83,10 +77,9 @@ const router = createBrowserRouter([
       },
       {
         path: "members",
-        element: <Members />,
+        element: (<Members />)
       },
     ],
   },
 ]);
-
 export default router;

@@ -10,9 +10,11 @@ const ProjectDetails = () => {
   const taskDispatch = useTasksDispatch();
   const projectState = useProjectsState();
   let { projectID } = useParams();
+
   useEffect(() => {
     if (projectID) refreshTasks(taskDispatch, projectID);
   }, [projectID, taskDispatch]);
+
   const selectedProject = projectState?.projects.filter(
     (project) => `${project.id}` === projectID
   )?.[0];
@@ -33,7 +35,7 @@ const ProjectDetails = () => {
         <Link to={`tasks/new`}>
           <button
             id="newTaskBtn"
-            className="rounded-md bg-blue-600 px-4 py-2 m-2 text-sm font-medium text-white hover:bg-opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
+            className="px-4 py-2 m-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
           >
             New Task
           </button>

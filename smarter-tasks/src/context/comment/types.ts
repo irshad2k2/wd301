@@ -1,35 +1,34 @@
-export interface Comment {
-  id: number;
-  description: string;
-  task_id: number;
-  owner: number;
-  project_id: number;
-  updatedAt: Date;
-  createdAt: Date;
-  user: User;
-}
-
-export type CommentPayload = {
-  description: string;
+export const initialStateComment: CommentListState = {
+  data: [],
+  isLoading: false,
+  isError: false,
+  errorMessage: "",
 };
 
-interface User {
-  id: number;
-  name: string;
-  email: string;
-}
-
 export interface CommentListState {
+  data: CommentDetails[];
   isLoading: boolean;
   isError: boolean;
   errorMessage: string;
-  comments: Comment[];
 }
 
-export enum CommentAvailableAction {
-  FETCH_COMMENTS_REQUEST = "FETCH_COMMENTS_REQUEST",
-  FETCH_COMMENTS_SUCCESS = "FETCH_COMMENTS_SUCCESS",
-  FETCH_COMMENTS_FAILURE = "FETCH_COMMENTS_FAILURE",
+export type CommentDetails = {
+  id: number;
+  description: string;
+  createdAt: Date;
+  User: {
+    name: string;
+  };
+};
+
+export type CommentDetailsPayload = {
+  description: string;
+};
+
+export enum CommentListAvailableAction {
+  FETCH_COMMENT_REQUEST = "FETCH_COMMENT_REQUEST",
+  FETCH_COMMENT_SUCCESS = "FETCH_COMMENT_SUCCESS",
+  FETCH_COMMENT_FAILURE = "FETCH_COMMENT_FAILURE",
 
   CREATE_COMMENT_REQUEST = "CREATE_COMMENT_REQUEST",
   CREATE_COMMENT_SUCCESS = "CREATE_COMMENT_SUCCESS",
@@ -37,9 +36,20 @@ export enum CommentAvailableAction {
 }
 
 export type CommentActions =
-  | { type: CommentAvailableAction.FETCH_COMMENTS_REQUEST }
-  | { type: CommentAvailableAction.FETCH_COMMENTS_SUCCESS; payload: Comment[] }
-  | { type: CommentAvailableAction.FETCH_COMMENTS_FAILURE; payload: string }
-  | { type: CommentAvailableAction.CREATE_COMMENT_REQUEST }
-  | { type: CommentAvailableAction.CREATE_COMMENT_SUCCESS; payload: Comment }
-  | { type: CommentAvailableAction.CREATE_COMMENT_FAILURE; payload: string };
+  | { type: CommentListAvailableAction.FETCH_COMMENT_REQUEST }
+  | {
+      type: CommentListAvailableAction.FETCH_COMMENT_SUCCESS;
+      payload: CommentDetails[];
+    }
+  | { type: CommentListAvailableAction.FETCH_COMMENT_FAILURE; payload: string }
+  | { type: CommentListAvailableAction.CREATE_COMMENT_REQUEST }
+  | {
+      type: CommentListAvailableAction.CREATE_COMMENT_SUCCESS;
+      payload: CommentDetails;
+    }
+  | {
+      type: CommentListAvailableAction.CREATE_COMMENT_FAILURE;
+      payload: string;
+    };
+
+export type CommentDispatch = React.Dispatch<CommentActions>;

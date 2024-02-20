@@ -1,13 +1,13 @@
 import { API_ENDPOINT } from "../../config/constants";
+import { ProjectData } from "./types";
 import {
   TaskDetailsPayload,
   TaskListAvailableAction,
   TasksDispatch,
 } from "./types";
 import { TaskDetails } from "./types";
-import { ProjectData } from "./types";
 
-
+// The function will take a dispatch as first argument, which can be used to send an action to `reducer` and update the state accordingly
 export const addTask = async (
   dispatch: TasksDispatch,
   projectID: string,
@@ -15,7 +15,10 @@ export const addTask = async (
 ) => {
   const token = localStorage.getItem("authToken") ?? "";
   try {
+    // The following action will toggle `isLoading` to `true`
     dispatch({ type: TaskListAvailableAction.CREATE_TASK_REQUEST });
+
+    // Invoke the backend server with POST request and create a task.
     const response = await fetch(
       `${API_ENDPOINT}/projects/${projectID}/tasks/`,
       {
@@ -31,20 +34,26 @@ export const addTask = async (
     if (!response.ok) {
       throw new Error("Failed to create task");
     }
+    // Turn `isLoading` to `false`
     dispatch({ type: TaskListAvailableAction.CREATE_TASK_SUCCESS });
     refreshTasks(dispatch, projectID);
   } catch (error) {
     console.error("Operation failed:", error);
+
+    // Update error status in the state.
     dispatch({
       type: TaskListAvailableAction.CREATE_TASK_FAILURE,
       payload: "Unable to create task",
     });
   }
 };
+
 export const reorderTasks = (dispatch: TasksDispatch, newState: ProjectData)  => {
+
   dispatch({type: TaskListAvailableAction.REORDER_TASKS, payload: newState})
-}
-export const refreshTasks = async (
+};
+
+export const refreshTasks = async (  
   dispatch: TasksDispatch,
   projectID: string
 ) => {
@@ -65,6 +74,7 @@ export const refreshTasks = async (
       throw new Error("Failed to fetch tasks");
     }
 
+    // extract the response body as JSON data
     const data = await response.json();
     dispatch({
       type: TaskListAvailableAction.FETCH_TASKS_SUCCESS,
@@ -79,6 +89,7 @@ export const refreshTasks = async (
     });
   }
 };
+
 export const deleteTask = async (
   dispatch: TasksDispatch,
   projectID: string,
@@ -100,7 +111,7 @@ export const deleteTask = async (
     );
 
     if (!response.ok) {
-      throw new Error("Failed to delete task details");
+      throw new Error("Failed to delete task");
     }
     dispatch({ type: TaskListAvailableAction.DELETE_TASKS_SUCCESS });
     refreshTasks(dispatch, projectID);
@@ -120,6 +131,7 @@ export const updateTask = async (
 ) => {
   const token = localStorage.getItem("authToken") ?? "";
   try {
+    // Display loading status
     dispatch({ type: TaskListAvailableAction.UPDATE_TASK_REQUEST });
     const response = await fetch(
       `${API_ENDPOINT}/projects/${projectID}/tasks/${task.id}`,
@@ -134,11 +146,14 @@ export const updateTask = async (
     );
 
     if (!response.ok) {
-      throw new Error("Failed to update the task details");     }
+      throw new Error("Failed to update task");
+    }
+    // Display success and refresh the tasks
     dispatch({ type: TaskListAvailableAction.UPDATE_TASK_SUCCESS });
     refreshTasks(dispatch, projectID);
   } catch (error) {
-    console.error("Operation is failed:", error);
+    console.error("Operation failed:", error);
+    // Display error status
     dispatch({
       type: TaskListAvailableAction.UPDATE_TASK_FAILURE,
       payload: "Unable to update task",

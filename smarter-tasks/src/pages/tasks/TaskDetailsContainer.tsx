@@ -1,8 +1,7 @@
-// import React from "react";
 import { useProjectsState } from "../../context/projects/context";
 import { useTasksState } from "../../context/task/context";
-import { useParams } from "react-router-dom";
 import TaskDetails from "./TaskDetails";
+import { useParams } from "react-router-dom";
 
 const TaskDetailsContainer = () => {
   let { taskID } = useParams();
@@ -11,11 +10,13 @@ const TaskDetailsContainer = () => {
   const isFetchingTasks = taskListState.isLoading;
   const selectedTask = taskListState.projectData.tasks?.[taskID || ""];
   if (isFetchingTasks || !projectState || projectState?.isLoading) {
- return <>Loading..!</>;
+ return <>Loading...</>;
   }
   if (!selectedTask) {
-    return <>No tasks found for this ID</>;
+    return <>No such task!</>;
   }
+
   return <TaskDetails />;
 };
+
 export default TaskDetailsContainer;

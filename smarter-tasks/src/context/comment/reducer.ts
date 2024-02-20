@@ -1,26 +1,48 @@
 import { Reducer } from "react";
 import {
-  CommentActions,
+  CommentListAvailableAction,
   CommentListState,
-  CommentAvailableAction,
+  CommentActions,
+  initialStateComment
 } from "./types";
-export const initialCommentState: CommentListState = {
-  comments: [],
-  isLoading: false,
-  isError: false,
-  errorMessage: "",
-};
+
 
 export const commentReducer: Reducer<CommentListState, CommentActions> = (
-  state = initialCommentState,
+  state = initialStateComment,
   action
 ) => {
+  console.log(`HI this Type${action.type}`);
   switch (action.type) {
-    case CommentAvailableAction.FETCH_COMMENTS_REQUEST:
+    case CommentListAvailableAction.FETCH_COMMENT_REQUEST:
       return { ...state, isLoading: true };
-    case CommentAvailableAction.FETCH_COMMENTS_SUCCESS:
-      return { ...state, isLoading: false, comments: action.payload };
-    case CommentAvailableAction.FETCH_COMMENTS_FAILURE:
+    case CommentListAvailableAction.FETCH_COMMENT_SUCCESS:
+      console.log("Existing state:", state);
+      console.log("New comments payload:", action.payload);
+      return {
+        ...state,
+        isLoading: false,
+        data:  action.payload ,
+      };
+    case CommentListAvailableAction.FETCH_COMMENT_FAILURE:
+      return {
+        ...state,
+        isLoading: false,
+        isError: true,
+        errorMessage: action.payload,
+      };
+    case CommentListAvailableAction.CREATE_COMMENT_REQUEST:
+      console.log(`HI this Type`);
+
+      return { ...state, isLoading: true };
+    case CommentListAvailableAction.CREATE_COMMENT_SUCCESS:
+      console.log(`HI this Type`);
+
+      return {
+        ...state,
+        isLoading: false,
+        data: [action.payload, ...state.data],
+      };
+    case CommentListAvailableAction.CREATE_COMMENT_FAILURE:
       return {
         ...state,
         isLoading: false,
@@ -28,17 +50,6 @@ export const commentReducer: Reducer<CommentListState, CommentActions> = (
         errorMessage: action.payload,
       };
 
-    case CommentAvailableAction.CREATE_COMMENT_REQUEST:
-      return { ...state, isLoading: true };
-    case CommentAvailableAction.CREATE_COMMENT_SUCCESS:
-      return { ...state, isLoading: false ,comments: [action.payload, ...state.comments],};
-    case CommentAvailableAction.CREATE_COMMENT_FAILURE:
-      return {
-        ...state,
-        isLoading: false,
-        isError: true,
-        errorMessage: action.payload,
-      };
     default:
       return state;
   }

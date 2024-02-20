@@ -1,63 +1,60 @@
+import { TaskDetails } from "../../context/task/types";
+import { Link } from "react-router-dom";
 import React, { forwardRef } from "react";
-import "./TaskCard.css";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useTasksDispatch } from "../../context/task/context";
 import { deleteTask } from "../../context/task/actions";
 import { Draggable } from "react-beautiful-dnd";
-import { TaskDetails } from "../../context/task/types";
 
-const Task = forwardRef<HTMLDivElement, React.PropsWithChildren<{ task: TaskDetails }>>(
-  (props, ref) => {
-    const taskDispatch = useTasksDispatch();
-    const { projectID } = useParams();
-    const { task } = props;
-
-    return (
-      <div ref={ref} {...props} className="m-2 flex">
-        <Link
-          className="TaskItem w-full shadow-md border border-slate-100 bg-white"
-          to={`tasks/${task.id}`}
-        >
-          <div className="sm:ml-4 sm:flex sm:w-full sm:justify-between">
-            <div>
-              <h2 className="text-base font-bold my-1">{task.title}</h2>
-              <p className="text-sm text-slate-500">
-                {new Date(task.dueDate).toDateString()}
-              </p>
-              <p className="text-sm text-slate-500">
-                Description: {task.description}
-              </p>
-              <p className="text-sm text-slate-500">
-                Assignee: {task.assignedUserName ?? "-"}
-              </p>
-            </div>
-            <button
-              className="deleteTaskButton cursor-pointer h-6 w-6 rounded-full my-5 mr-5 flex items-center justify-center"
-              onClick={(event) => {
-                event.preventDefault();
-                deleteTask(taskDispatch, projectID ?? "", task);
-              }}
-            >
-              <svg
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                className="w-4 h-4 text-red-500 hover:text-red-700"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
+const Task = forwardRef<
+  HTMLDivElement,
+  React.PropsWithChildren<{ task: TaskDetails }>
+>((props, ref) => {
+  const taskDispatch = useTasksDispatch();
+  const { projectID } = useParams();
+  const { task } = props;
+  // Attach the `ref` and spread the `props`
+  return (
+    <div ref={ref} {...props} className="flex m-2">
+      <Link
+        className="w-full bg-white border shadow-md TaskItem border-slate-100"
+        to={`tasks/${task.id}`}
+      >
+        <div className="sm:ml-4 sm:flex sm:w-full sm:justify-between">
+          <div>
+            <h2 className="my-1 text-base font-bold">{task.title}</h2>
+            <p className="text-sm text-slate-500">
+              {new Date(task.dueDate).toDateString()}
+            </p>
+            <p className="text-sm text-slate-500">
+              Description: {task.description}
+            </p>
+            <p className="text-sm text-slate-500">
+              Assignee: {task.assignedUserName ?? "-"}
+            </p>
           </div>
-        </Link>
-      </div>
-    );
-  }
-);
+          <button
+            className="w-4 h-4 my-5 mr-5 rounded-full cursor-pointer deleteTaskButton"
+            onClick={(event) => {
+              event.preventDefault();
+              deleteTask(taskDispatch, projectID ?? "", task);
+            }}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+            >
+              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+              <path d="M0 0h24v24H0z" fill="none" />
+            </svg>
+          </button>
+        </div>
+      </Link>
+    </div>
+  );
+});
 
 const Container = (
   props: React.PropsWithChildren<{

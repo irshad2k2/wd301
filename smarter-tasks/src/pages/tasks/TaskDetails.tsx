@@ -1,26 +1,24 @@
-import { Dialog, Transition, Listbox } from "@headlessui/react";
-import  { Fragment, useState, useEffect } from "react";
-import { useTasksDispatch, useTasksState } from "../../context/task/context";
-import { updateTask } from "../../context/task/actions";
-import CheckIcon from "@heroicons/react/24/outline/CheckIcon";
-import { useProjectsState } from "../../context/projects/context";
-import { TaskDetailsPayload } from "../../context/task/types";
-import { useUsersState } from "../../context/members/context";
+import { Dialog, Listbox, Transition } from "@headlessui/react";
+import { Fragment, useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
-
+import CheckIcon from "@heroicons/react/24/outline/CheckIcon";
+import { useTasksDispatch, useTasksState } from "../../context/task/context";
 import {
-  fetchComments, 
-  createComment, 
-} from "../../context/comment/actions";
-import {
-  useCommentState,
-  useCommentDispatch,
+  useCommentsState,
+  useCommentsDispatch,
 } from "../../context/comment/context";
+import { updateTask } from "../../context/task/actions";
+import { useMembersState } from "../../context/members/context";
+import { useProjectsState } from "../../context/projects/context";
+import { TaskDetailsPayload } from "../../context/task/types";
+import { fetchComment, addComments } from "../../context/comment/actions";
 
 type TaskFormUpdatePayload = TaskDetailsPayload & {
   selectedPerson: string;
-  commentText: string;
+};
+type Inputs = {
+  description: string;
 };
 
 const formatDateForPicker = (isoDate: string) => {
@@ -34,11 +32,16 @@ const formatDateForPicker = (isoDate: string) => {
 
 const TaskDetails = () => {
   let [isOpen, setIsOpen] = useState(true);
+  let [inputComment, setInputComment] = useState("");
 
-  let { projectID, taskID } = useParams();
+  const { projectID = "", taskID = "" } = useParams<{
+    projectID?: string;
+    taskID?: string;
+  }>();
   let navigate = useNavigate();
 
   const projectState = useProjectsState();
+  const memberState = useMembersState();
   const taskListState = useTasksState();
   const taskDispatch = useTasksDispatch();
 
@@ -47,44 +50,30 @@ const TaskDetails = () => {
   )[0];
 
   const selectedTask = taskListState.projectData.tasks[taskID ?? ""];
-  // Use react-form-hook to manage the form. Initialize with data from selectedTask.
-  const memberState = useUsersState();
-
-  const commentsDispatch = useCommentDispatch();
-  const commentsState = useCommentState();
+  const dispatch = useCommentsDispatch();
+  const commentsState = useCommentsState();
   useEffect(() => {
-    if (projectID && taskID) fetchComments(commentsDispatch, projectID, taskID);
-  }, [commentsDispatch, projectID, taskID]);
+    const fetchData = async () => {
+      try {
+        if (projectID && taskID) {
+          console.log("Fetching comments...");
+          await fetchComment(dispatch, projectID, taskID);
+        }
+      } catch (error) {
+        console.error("Error fetching comments:", error);
+      }
+    };
 
-  const getDate = (date: Date): string => {
-    const newDate = new Date(date);
-    return `${newDate.toLocaleDateString("en-In")} ${newDate.toLocaleTimeString(
-      "en-In",
-    )}`;
-  };
-
-  const getuser = (owner: number) => {
-    const user = memberState?.users.filter((member) => member.id === owner)[0];
-    return user?.name;
-  };
+    fetchData();
+  }, [projectID, taskID]);
 
   const [selectedPerson, setSelectedPerson] = useState(
     selectedTask.assignedUserName ?? ""
   );
-  const onSubmit: SubmitHandler<TaskFormUpdatePayload> = async (data) => {
-    const assignee = memberState?.users?.filter(
-      (user) => user.name === selectedPerson
-    )?.[0];
-    updateTask(taskDispatch, projectID ?? "", {
-      ...selectedTask,
-      ...data,
-      assignee: assignee?.id,
-    });
-    closeModal();
-  };
   const {
     register,
     handleSubmit,
+    formState: { errors },
   } = useForm<TaskFormUpdatePayload>({
     defaultValues: {
       title: selectedTask.title,
@@ -103,15 +92,28 @@ const TaskDetails = () => {
     navigate("../../");
   }
 
-  const handleCreateComment = (commentText: string) => {
-        const comment = {
-          description: commentText,
-        };
-        console.log(comment);
-      if(projectID && taskID)
-      createComment(commentsDispatch, projectID, taskID, comment);
+  const onSubmit: SubmitHandler<TaskFormUpdatePayload> = async (data) => {
+    const assignee = memberState?.members?.filter(
+      (member) => member.name === selectedPerson
+    )?.[0];
+    updateTask(taskDispatch, projectID ?? "", {
+      ...selectedTask,
+      ...data,
+      assignee: assignee?.id,
+    });
+    closeModal();
   };
+  const onSubmitComment: SubmitHandler<Inputs> = async () => {
+    try {
+      addComments(dispatch, projectID ?? "", taskID ?? "", {
+        description: inputComment,
+      });
 
+      setInputComment("");
+    } catch (error) {
+      console.error("Failed to add comment:", error);
+    }
+  };
   return (
     <>
       <Transition appear show={isOpen} as={Fragment}>
@@ -129,7 +131,7 @@ const TaskDetails = () => {
           </Transition.Child>
 
           <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4 text-center">
+            <div className="flex items-center justify-center min-h-full p-4 text-center">
               <Transition.Child
                 as={Fragment}
                 enter="ease-out duration-300"
@@ -139,7 +141,7 @@ const TaskDetails = () => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                <Dialog.Panel className="w-full max-w-md p-6 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
                   <Dialog.Title
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900"
@@ -148,13 +150,15 @@ const TaskDetails = () => {
                   </Dialog.Title>
                   <div className="mt-2">
                     <form onSubmit={handleSubmit(onSubmit)}>
+                      {errors && <span>This field is required</span>}
+
                       <input
                         type="text"
                         required
                         placeholder="Enter title"
                         id="title"
                         {...register("title", { required: true })}
-                        className="w-full border rounded-md py-2 px-3 my-4 text-gray-700 leading-tight focus:outline-none focus:border-blue-500 focus:shadow-outline-blue"
+                        className="w-full px-3 py-2 my-4 leading-tight text-gray-700 border rounded-md focus:outline-none focus:border-blue-500 focus:shadow-outline-blue"
                       />
                       <input
                         type="text"
@@ -162,7 +166,7 @@ const TaskDetails = () => {
                         placeholder="Enter description"
                         id="description"
                         {...register("description", { required: true })}
-                        className="w-full border rounded-md py-2 px-3 my-4 text-gray-700 leading-tight focus:outline-none focus:border-blue-500 focus:shadow-outline-blue"
+                        className="w-full px-3 py-2 my-4 leading-tight text-gray-700 border rounded-md focus:outline-none focus:border-blue-500 focus:shadow-outline-blue"
                       />
                       <input
                         type="date"
@@ -170,7 +174,7 @@ const TaskDetails = () => {
                         placeholder="Enter due date"
                         id="dueDate"
                         {...register("dueDate", { required: true })}
-                        className="w-full border rounded-md py-2 px-3 my-4 text-gray-700 leading-tight focus:outline-none focus:border-blue-500 focus:shadow-outline-blue"
+                        className="w-full px-3 py-2 my-4 leading-tight text-gray-700 border rounded-md focus:outline-none focus:border-blue-500 focus:shadow-outline-blue"
                       />
                       <h3>
                         <strong>Assignee</strong>
@@ -179,11 +183,11 @@ const TaskDetails = () => {
                         value={selectedPerson}
                         onChange={setSelectedPerson}
                       >
-                        <Listbox.Button className="w-full border rounded-md py-2 px-3 my-2 text-gray-700 text-base text-left">
+                        <Listbox.Button className="w-full px-3 py-2 my-2 text-base text-left text-gray-700 border rounded-md">
                           {selectedPerson}
                         </Listbox.Button>
-                        <Listbox.Options className="absolute mt-1 max-h-60 rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                          {memberState?.users?.map((person) => (
+                        <Listbox.Options className="absolute py-1 mt-1 text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                          {memberState?.members.map((person) => (
                             <Listbox.Option
                               key={person.id}
                               className={({ active }) =>
@@ -207,7 +211,7 @@ const TaskDetails = () => {
                                   {selected ? (
                                     <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-blue-600">
                                       <CheckIcon
-                                        className="h-5 w-5"
+                                        className="w-5 h-5"
                                         aria-hidden="true"
                                       />
                                     </span>
@@ -218,75 +222,84 @@ const TaskDetails = () => {
                           ))}
                         </Listbox.Options>
                       </Listbox>
-
-
-                      <div className="mt-4">
-                      <h3 className="text-lg font-medium leading-6 text-gray-900">
-                        Comments
-                      </h3>
-                      <div>
-                        {/* Render comments from commentsState as needed */}
-                        {commentsState.isLoading ? (
-                          <p>Loading comments...</p>
-                        ) : commentsState.isError ? (
-                          <p>Error: {commentsState.errorMessage}</p>
-                        ) : (
-                          <div className="mt-2 space-y-4">
-                            {commentsState.comments.map((comment) => (
-                              <div
-                                key={comment.id}
-                                className="comment bg-gray-100 p-3 rounded-lg shadow-md"
-                              >
-                                <div className="text-gray-600">
-                                  <p className="m-2">{comment.description}</p>
-                                  <p className="m-2">{getDate(comment.createdAt)}</p>
-                                  <p className="m-2">{getuser(comment.owner)}</p>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                      <div className="mt-4">
-                        <input
-                          type="text"
-                          id="commentBox"
-                          placeholder="Add a comment..."
-                          className="w-full border rounded-md py-2 px-3 my-2 text-gray-700 text-base focus:outline-none focus:border-blue-500 focus:shadow-outline-blue"
-                        />
-                        <button
-                          id="addCommentBtn"
-                          type="button"
-                          onClick={() => {
-                            const commentBox = document.getElementById("commentBox") as HTMLInputElement | null;
-                            const commentText = commentBox?.value;
-                            if (commentText) {
-                              handleCreateComment(commentText);
-                            }
-                          }}
-                          className="mb-4 inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                        >
-                          Add Comment
-                        </button>
-                      </div>
-                    </div>
-
-
                       <button
                         type="submit"
-                        className="inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 mr-2 text-sm font-medium text-white hover:bg-blue-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                        className="inline-flex justify-center px-4 py-2 mr-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                       >
                         Update
                       </button>
                       <button
                         type="submit"
                         onClick={closeModal}
-                        className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                        className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                       >
                         Cancel
                       </button>
                     </form>
-                   
+
+                    <form
+                      onSubmit={handleSubmit(onSubmitComment)}
+                      className="mt-5"
+                    >
+                      <h3 className="mb-3 font-serif text-xl font-semibold ">
+                        Comment Details
+                      </h3>
+
+                      <input
+                        type="text"
+                        placeholder="Enter comment here"
+                        id="commentBox"
+                        required
+                        onChange={(e) => setInputComment(e.target.value)}
+                        value={inputComment}
+                        className="w-full px-3 py-2 my-4 leading-tight text-gray-700 border rounded-md focus:outline-none focus:border-blue-500 focus:shadow-outline-blue"
+                      />
+                      <button
+                        type="submit"
+                        id="addCommentBtn"
+                        className="inline-flex justify-center px-4 py-2 mr-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                      >
+                        Add comment
+                      </button>
+                    </form>
+
+                    <div className="mt-2 space-y-4">
+                      {commentsState.isLoading ? (
+                        <p>Loading comments...</p>
+                      ) : commentsState.isError ? (
+                        <p>Error: {commentsState.errorMessage}</p>
+                      ) : (
+                        <div className="mt-2 space-y-4">
+                          {commentsState.data.map((comment) => (
+                            <div
+                              key={comment.id}
+                              className="p-3 bg-gray-100 rounded-lg shadow-md comment"
+                            >
+                              <div className="text-gray-600">
+                                {comment.User && (
+                                  <>
+                                    <p className="m-2">
+                                      <strong>Name:</strong> {comment.User.name}
+                                    </p>
+                                    <p className="m-2">
+                                      <strong>Timestamp:</strong>{" "}
+                                      {comment.createdAt &&
+                                        new Date(
+                                          comment.createdAt
+                                        ).toLocaleString()}
+                                    </p>
+                                  </>
+                                )}
+                                <p className="m-2">
+                                  <strong>Comment:</strong>{" "}
+                                  {comment.description}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </Dialog.Panel>
               </Transition.Child>

@@ -1,15 +1,13 @@
-import React, { Suspense } from "react";
 import NewMember from "./NewMember";
+import React, { Suspense } from "react";
 const MemberList = React.lazy(() => import("./MemberList"));
 import ErrorBoundary from "../../components/ErrorBoundary";
 
 const Members = () => {
   return (
     <>
-      <div className="flex justify-between items-center bg-blue-500 p-4">
-        <h2 className="text-3xl font-medium text-white tracking-tight">
-          Members
-        </h2>
+      <div className="flex justify-between">
+        <h2 className="text-2xl font-medium tracking-tight">Members</h2>
         <NewMember />
       </div>
       <ErrorBoundary>
@@ -18,7 +16,6 @@ const Members = () => {
         </Suspense>
       </ErrorBoundary>
     </>
-  );
-};
-
+  )
+}
 export default Members;

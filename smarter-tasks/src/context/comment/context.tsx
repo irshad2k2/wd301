@@ -1,29 +1,26 @@
 import React, { createContext, useContext, useReducer } from "react";
-import { CommentListState, CommentActions } from "./types";
-import { commentReducer, initialCommentState } from "./reducer";
+import { initialStateComment } from "./types";
+import { commentReducer } from "./reducer";
+import { CommentListState, CommentDispatch } from "./types";
 
-const CommentStateContext =
-  createContext<CommentListState>(initialCommentState);
-const CommentDispatchContext = createContext<React.Dispatch<CommentActions>>(
-  () => {}
-);
+const CommentsStateContext =
+  createContext<CommentListState>(initialStateComment);
+
+const CommentsDispatchContext = createContext<CommentDispatch>(() => {});
 
 export const CommentProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
-  const [state, dispatch] = useReducer(commentReducer, initialCommentState);
-
+  const [state, dispatch] = useReducer(commentReducer, initialStateComment);
   return (
-    <CommentStateContext.Provider value={state}>
-      <CommentDispatchContext.Provider value={dispatch}>
-
+    <CommentsStateContext.Provider value={state}>
+      <CommentsDispatchContext.Provider value={dispatch}>
         {children}
-      
-      </CommentDispatchContext.Provider>
-    </CommentStateContext.Provider>
+      </CommentsDispatchContext.Provider>
+    </CommentsStateContext.Provider>
   );
 };
 
-export const useCommentState = () => useContext(CommentStateContext);
+export const useCommentsState = () => useContext(CommentsStateContext);
 
-export const useCommentDispatch = () => useContext(CommentDispatchContext);
+export const useCommentsDispatch = () => useContext(CommentsDispatchContext);

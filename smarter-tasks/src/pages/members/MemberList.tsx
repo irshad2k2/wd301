@@ -1,22 +1,18 @@
-import React, { useEffect } from "react";
-import { useUsersDispatch } from "../../context/members/context";
-import MemberListItems from "./MemberListItems";
-import { fetchUsers } from "../../context/members/actions";
+import { fetchMembers } from "../../context/members/actions";
+import { useEffect } from "react";
+import { useMembersDispatch } from "../../context/members/context";
+import MemberListItems from './MemberListItems';
 
 const MemberList: React.FC = () => {
-
-    const dispatchUsers = useUsersDispatch();
-
+  const dispatchMembers = useMembersDispatch();
   useEffect(() => {
-    fetchUsers(dispatchUsers);
-  }, []);
-
+    fetchMembers(dispatchMembers)
+  }, [])
+  
   return (
-    <div className="grid gap-1 grid-cols-4 mt-1 ml-1 mr-1 ">
-            <MemberListItems />
+    <div className="grid grid-cols-4 gap-4 mt-5">
+      <MemberListItems />
     </div>
   );
 };
-
-
 export default MemberList;

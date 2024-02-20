@@ -1,11 +1,12 @@
+import React, { createContext, useContext, useReducer } from "react";
 import { taskReducer, initialState } from "./reducer";
 import { TaskListState, TasksDispatch } from "./types";
-import React, { createContext, useContext, useReducer } from "react";
 const TasksStateContext = createContext<TaskListState>(initialState);
 const TasksDispatchContext = createContext<TasksDispatch>(() => {});
 export const TasksProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
+  // Create a state and dispatch with `useReducer` passing in the `taskReducer` and an initial state. Pass these as values to our contexts.
   const [state, dispatch] = useReducer(taskReducer, initialState);
   return (
     <TasksStateContext.Provider value={state}>
@@ -15,5 +16,7 @@ export const TasksProvider: React.FC<React.PropsWithChildren> = ({
     </TasksStateContext.Provider>
   );
 };
-export const useTasksDispatch = () => useContext(TasksDispatchContext);
+
+// Create helper hooks to extract the `state` and `dispacth` out of the context.
 export const useTasksState = () => useContext(TasksStateContext);
+export const useTasksDispatch = () => useContext(TasksDispatchContext);
