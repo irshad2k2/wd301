@@ -2,7 +2,7 @@ import React, { Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import NewMember from "./NewMember";
 const MemberList = React.lazy(() => import("./MemberList"));
-import ErrorBoundary from "../../components/ErrorBoundary";
+// import ErrorBoundary from "../../components/ErrorBoundary";
 
 const Members = () => {
   const { t } = useTranslation();
@@ -15,13 +15,13 @@ const Members = () => {
         </h2>
         <NewMember />
       </div>
-      <ErrorBoundary>
+      {/* <ErrorBoundary> */}
         <Suspense
           fallback={<div className="suspense-loading">{t("loading")}</div>}
         >
           <MemberList />
         </Suspense>
-      </ErrorBoundary>
+      {/* </ErrorBoundary> */}
     </>
   );
 };
