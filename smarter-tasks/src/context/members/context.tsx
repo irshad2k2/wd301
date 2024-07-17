@@ -5,10 +5,14 @@ const MembersStateContext = createContext<MembersState | undefined>(undefined);
 type MembersDispatch = React.Dispatch<MembersActions>;
 export const useMembersState = () => useContext(MembersStateContext);
 
-const MembersDispatchContext = createContext<MembersDispatch | undefined>(undefined);
+const MembersDispatchContext = createContext<MembersDispatch | undefined>(
+  undefined,
+);
 export const useMembersDispatch = () => useContext(MembersDispatchContext);
 
-export const MembersProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
+export const MembersProvider: React.FC<React.PropsWithChildren> = ({
+  children,
+}) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   return (
@@ -19,5 +23,3 @@ export const MembersProvider: React.FC<React.PropsWithChildren> = ({ children })
     </MembersStateContext.Provider>
   );
 };
-
-

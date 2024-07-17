@@ -11,7 +11,7 @@ import { TaskDetails } from "./types";
 export const addTask = async (
   dispatch: TasksDispatch,
   projectID: string,
-  task: TaskDetailsPayload
+  task: TaskDetailsPayload,
 ) => {
   const token = localStorage.getItem("authToken") ?? "";
   try {
@@ -28,7 +28,7 @@ export const addTask = async (
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(task),
-      }
+      },
     );
 
     if (!response.ok) {
@@ -48,14 +48,16 @@ export const addTask = async (
   }
 };
 
-export const reorderTasks = (dispatch: TasksDispatch, newState: ProjectData)  => {
-
-  dispatch({type: TaskListAvailableAction.REORDER_TASKS, payload: newState})
+export const reorderTasks = (
+  dispatch: TasksDispatch,
+  newState: ProjectData,
+) => {
+  dispatch({ type: TaskListAvailableAction.REORDER_TASKS, payload: newState });
 };
 
-export const refreshTasks = async (  
+export const refreshTasks = async (
   dispatch: TasksDispatch,
-  projectID: string
+  projectID: string,
 ) => {
   const token = localStorage.getItem("authToken") ?? "";
   try {
@@ -67,7 +69,7 @@ export const refreshTasks = async (
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-      }
+      },
     );
 
     if (!response.ok) {
@@ -93,7 +95,7 @@ export const refreshTasks = async (
 export const deleteTask = async (
   dispatch: TasksDispatch,
   projectID: string,
-  task: TaskDetails
+  task: TaskDetails,
 ) => {
   const token = localStorage.getItem("authToken") ?? "";
   try {
@@ -107,7 +109,7 @@ export const deleteTask = async (
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(task),
-      }
+      },
     );
 
     if (!response.ok) {
@@ -127,7 +129,7 @@ export const deleteTask = async (
 export const updateTask = async (
   dispatch: TasksDispatch,
   projectID: string,
-  task: TaskDetails
+  task: TaskDetails,
 ) => {
   const token = localStorage.getItem("authToken") ?? "";
   try {
@@ -142,7 +144,7 @@ export const updateTask = async (
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(task),
-      }
+      },
     );
 
     if (!response.ok) {

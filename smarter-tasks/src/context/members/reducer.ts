@@ -2,7 +2,7 @@ interface Member {
   id: number;
   name: string;
   password: string;
-  email: string
+  email: string;
 }
 
 export interface MembersState {
@@ -13,25 +13,28 @@ export interface MembersState {
 }
 
 export type MembersActions =
-  | { type: 'FETCH_MEMBERS_REQUEST' }
-  | { type: 'FETCH_MEMBERS_SUCCESS'; payload: Member[] }
-  | { type: 'FETCH_MEMBERS_FAILURE'; payload: string }
-  | { type: 'ADD_MEMBER_SUCCESS'; payload: Member }
+  | { type: "FETCH_MEMBERS_REQUEST" }
+  | { type: "FETCH_MEMBERS_SUCCESS"; payload: Member[] }
+  | { type: "FETCH_MEMBERS_FAILURE"; payload: string }
+  | { type: "ADD_MEMBER_SUCCESS"; payload: Member }
   | { type: "DELETE_MEMBER_SUCCESS"; payload: number };
 
 export const initialState: MembersState = {
   members: [],
   isLoading: false,
   isError: false,
-  errorMessage: ''
+  errorMessage: "",
 };
 
-export const reducer = (state: MembersState = initialState, action: MembersActions): MembersState => {
+export const reducer = (
+  state: MembersState = initialState,
+  action: MembersActions,
+): MembersState => {
   switch (action.type) {
     case "FETCH_MEMBERS_REQUEST":
       return {
         ...state,
-        isLoading: true
+        isLoading: true,
       };
     case "FETCH_MEMBERS_SUCCESS":
       return {
@@ -44,16 +47,16 @@ export const reducer = (state: MembersState = initialState, action: MembersActio
         ...state,
         isLoading: false,
         isError: true,
-        errorMessage: action.payload
+        errorMessage: action.payload,
       };
     case "DELETE_MEMBER_SUCCESS":
       return {
         ...state,
         members: state.members.filter((member) => member.id !== action.payload),
       };
-    case 'ADD_MEMBER_SUCCESS':
+    case "ADD_MEMBER_SUCCESS":
       return { ...state, members: [...state.members, action.payload] };
     default:
       return state;
   }
-}
+};

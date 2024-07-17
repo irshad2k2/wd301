@@ -10,14 +10,14 @@ export const initialState: TaskListState = {
 };
 export const taskReducer: Reducer<TaskListState, TaskActions> = (
   state = initialState,
-  action
+  action,
 ) => {
   switch (action.type) {
     // Update reducer to handle the actions dispatched on fetching tasks.
     case TaskListAvailableAction.FETCH_TASKS_REQUEST:
       return { ...state, isLoading: true };
     case TaskListAvailableAction.FETCH_TASKS_SUCCESS:
-      console.log("HI")
+      console.log("HI");
       return { ...state, isLoading: false, projectData: action.payload };
     case TaskListAvailableAction.FETCH_TASKS_FAILURE:
       return {
@@ -29,7 +29,7 @@ export const taskReducer: Reducer<TaskListState, TaskActions> = (
     case TaskListAvailableAction.CREATE_TASK_REQUEST:
       return { ...state, isLoading: true };
     case TaskListAvailableAction.CREATE_TASK_SUCCESS:
-      console.log("While Creating")
+      console.log("While Creating");
       return { ...state, isLoading: false };
     case TaskListAvailableAction.CREATE_TASK_FAILURE:
       return {

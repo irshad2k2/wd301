@@ -5,15 +5,40 @@ import { useParams } from "react-router-dom";
 import { useTasksDispatch } from "../../context/task/context";
 import { deleteTask } from "../../context/task/actions";
 import { Draggable } from "react-beautiful-dnd";
+import { useTranslation } from "react-i18next";
 
 const Task = forwardRef<
   HTMLDivElement,
   React.PropsWithChildren<{ task: TaskDetails }>
 >((props, ref) => {
+  const { t, i18n } = useTranslation();
   const taskDispatch = useTasksDispatch();
   const { projectID } = useParams();
   const { task } = props;
-  // Attach the `ref` and spread the `props`
+
+  const currentLanguage = i18n.language;
+
+  const dateFormatter = new Intl.DateTimeFormat(
+    currentLanguage === "en"
+      ? "en-US"
+      : currentLanguage === "pt"
+        ? "pt-PT"
+        : currentLanguage === "fr"
+          ? "fr-FR"
+          : currentLanguage === "de"
+            ? "de-DE"
+            : currentLanguage === "hi"
+              ? "hi-IN"
+              : currentLanguage === "ta"
+                ? "ta-IN"
+                : "en-US",
+    {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    },
+  );
+
   return (
     <div ref={ref} {...props} className="flex m-2">
       <Link
@@ -24,13 +49,13 @@ const Task = forwardRef<
           <div>
             <h2 className="my-1 text-base font-bold">{task.title}</h2>
             <p className="text-sm text-slate-500">
-              {new Date(task.dueDate).toDateString()}
+              {dateFormatter.format(new Date(task.dueDate))}
             </p>
             <p className="text-sm text-slate-500">
-              Description: {task.description}
+              {t("description")}: {task.description}
             </p>
             <p className="text-sm text-slate-500">
-              Assignee: {task.assignedUserName ?? "-"}
+              {t("assignee")}: {task.assignedUserName ?? "-"}
             </p>
           </div>
           <button
@@ -60,7 +85,7 @@ const Container = (
   props: React.PropsWithChildren<{
     task: TaskDetails;
     index: number;
-  }>
+  }>,
 ) => {
   return (
     <Draggable index={props.index} draggableId={`${props.task.id}`}>

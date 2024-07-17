@@ -6,7 +6,7 @@ export const addComments = async (
   dispatch: CommentDispatch,
   projectID: string,
   taskID: string,
-  comment: CommentDetailsPayload
+  comment: CommentDetailsPayload,
 ) => {
   const token = localStorage.getItem("authToken") ?? "";
   try {
@@ -20,7 +20,7 @@ export const addComments = async (
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(comment),
-      }
+      },
     );
 
     if (!response.ok) {
@@ -35,7 +35,6 @@ export const addComments = async (
 
     console.log(data);
     fetchComment(dispatch, projectID, taskID);
-    
   } catch (error) {
     console.error("Operation failed:", error);
     dispatch({
@@ -48,7 +47,7 @@ export const addComments = async (
 export const fetchComment = async (
   dispatch: CommentDispatch,
   projectID: string,
-  taskID: string
+  taskID: string,
 ) => {
   const token = localStorage.getItem("authToken") ?? "";
   try {
@@ -61,7 +60,7 @@ export const fetchComment = async (
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-      }
+      },
     );
 
     if (!response.ok) {

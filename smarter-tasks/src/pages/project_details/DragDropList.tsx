@@ -3,16 +3,14 @@ import { AvailableColumns, ProjectData } from "../../context/task/types";
 import Column from "./Column";
 import { DragDropContext, OnDragEndResponder } from "react-beautiful-dnd";
 import { useTasksDispatch } from "../../context/task/context";
-import { useParams } from 'react-router-dom';
+import { useParams } from "react-router-dom";
 import { reorderTasks, updateTask } from "../../context/task/actions";
 
 const Container = (props: React.PropsWithChildren) => {
   return <div className="flex">{props.children}</div>;
 };
 
-const DragDropList = (props: {
-  data: ProjectData;
-}) => {
+const DragDropList = (props: { data: ProjectData }) => {
   const { projectID } = useParams();
   const taskDispatch = useTasksDispatch();
   const onDragEnd: OnDragEndResponder = (result) => {
@@ -70,7 +68,7 @@ const DragDropList = (props: {
       taskIDs: finishTaskIDs,
     };
 
-    // Create new state with newStart and newFinish 
+    // Create new state with newStart and newFinish
     const newState = {
       ...props.data,
       columns: {
@@ -89,7 +87,9 @@ const DragDropList = (props: {
       <Container>
         {props.data.columnOrder.map((colID) => {
           const column = props.data.columns[colID];
-          const tasks = column.taskIDs.map((taskID) => props.data.tasks[taskID]);
+          const tasks = column.taskIDs.map(
+            (taskID) => props.data.tasks[taskID],
+          );
           return <Column key={column.id} column={column} tasks={tasks} />;
         })}
       </Container>

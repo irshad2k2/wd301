@@ -6,6 +6,7 @@ import { useProjectsState } from "../../context/projects/context";
 import { useTasksDispatch } from "../../context/task/context";
 import { addTask } from "../../context/task/actions";
 import { TaskDetailsPayload } from "../../context/task/types";
+import { useTranslation } from "react-i18next";
 
 const NewTask = () => {
   let [isOpen, setIsOpen] = useState(true);
@@ -13,7 +14,8 @@ const NewTask = () => {
   let { projectID } = useParams();
   let navigate = useNavigate();
 
-  // Use react-hook-form to create form submission handler and state.
+  const { t } = useTranslation();
+
   const {
     register,
     handleSubmit,
@@ -22,9 +24,8 @@ const NewTask = () => {
   const projectState = useProjectsState();
   const taskDispatch = useTasksDispatch();
 
-  // We do some sanity checks to make sure the `projectID` passed is a valid one
   const selectedProject = projectState?.projects.filter(
-    (project) => `${project.id}` === projectID
+    (project) => `${project.id}` === projectID,
   )?.[0];
   if (!selectedProject) {
     return <>No such Project!</>;
@@ -35,7 +36,6 @@ const NewTask = () => {
   }
   const onSubmit: SubmitHandler<TaskDetailsPayload> = async (data) => {
     try {
-      // Invoke the actual API and create a task.
       addTask(taskDispatch, projectID ?? "", data);
       closeModal();
     } catch (error) {
@@ -73,54 +73,50 @@ const NewTask = () => {
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900"
                   >
-                    Create new Task
+                    {t("createNewTask")}
                   </Dialog.Title>
                   <div className="mt-2">
                     <form onSubmit={handleSubmit(onSubmit)}>
-                    {errors && <span>This field is required</span>}
+                      {errors && <span>{t("fieldRequired")}</span>}
                       <input
                         type="text"
                         required
-                        placeholder="Enter title"
+                        placeholder={t("enterTitle")}
                         autoFocus
                         id="title"
-                        // Register the title field
                         {...register("title", { required: true })}
                         className="w-full px-3 py-2 my-4 leading-tight text-gray-700 border rounded-md focus:outline-none focus:border-blue-500 focus:shadow-outline-blue"
                       />
                       <input
                         type="text"
                         required
-                        placeholder="Enter description"
+                        placeholder={t("enterDescription")}
                         autoFocus
                         id="description"
-                        // register the description field
                         {...register("description", { required: true })}
                         className="w-full px-3 py-2 my-4 leading-tight text-gray-700 border rounded-md focus:outline-none focus:border-blue-500 focus:shadow-outline-blue"
                       />
                       <input
                         type="date"
                         required
-                        placeholder="Enter due date"
+                        placeholder={t("enterDueDate")}
                         autoFocus
                         id="dueDate"
-                        // register due date field
                         {...register("dueDate", { required: true })}
                         className="w-full px-3 py-2 my-4 leading-tight text-gray-700 border rounded-md focus:outline-none focus:border-blue-500 focus:shadow-outline-blue"
                       />
                       <button
                         type="submit"
-                        // Set an id for the submit button
                         id="newTaskSubmitBtn"
                         className="inline-flex justify-center px-4 py-2 mr-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                       >
-                        Submit
+                        {t("submit")}
                       </button>
                       <button
                         onClick={closeModal}
                         className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                       >
-                        Cancel
+                        {t("cancel")}
                       </button>
                     </form>
                   </div>
@@ -133,4 +129,5 @@ const NewTask = () => {
     </>
   );
 };
+
 export default NewTask;

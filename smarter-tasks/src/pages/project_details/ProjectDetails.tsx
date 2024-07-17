@@ -4,8 +4,10 @@ import { useTasksDispatch, useTasksState } from "../../context/task/context";
 import DragDropList from "./DragDropList";
 import { refreshTasks } from "../../context/task/actions";
 import { useProjectsState } from "../../context/projects/context";
+import { useTranslation } from "react-i18next";
 
 const ProjectDetails = () => {
+  const { t } = useTranslation();
   const tasksState = useTasksState();
   const taskDispatch = useTasksDispatch();
   const projectState = useProjectsState();
@@ -16,15 +18,15 @@ const ProjectDetails = () => {
   }, [projectID, taskDispatch]);
 
   const selectedProject = projectState?.projects.filter(
-    (project) => `${project.id}` === projectID
+    (project) => `${project.id}` === projectID,
   )?.[0];
 
   if (!selectedProject) {
-    return <>No such Project!</>;
+    return <>{t("noProject")}</>;
   }
 
   if (tasksState.isLoading) {
-    return <>Loading...</>;
+    return <>{t("loading")}</>;
   }
   return (
     <>
@@ -37,7 +39,7 @@ const ProjectDetails = () => {
             id="newTaskBtn"
             className="px-4 py-2 m-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
           >
-            New Task
+            {t("newTask")}
           </button>
         </Link>
       </div>

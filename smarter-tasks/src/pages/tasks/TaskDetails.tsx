@@ -13,6 +13,7 @@ import { useMembersState } from "../../context/members/context";
 import { useProjectsState } from "../../context/projects/context";
 import { TaskDetailsPayload } from "../../context/task/types";
 import { fetchComment, addComments } from "../../context/comment/actions";
+import { useTranslation } from "react-i18next";
 
 type TaskFormUpdatePayload = TaskDetailsPayload & {
   selectedPerson: string;
@@ -31,6 +32,8 @@ const formatDateForPicker = (isoDate: string) => {
 };
 
 const TaskDetails = () => {
+  const { t } = useTranslation();
+
   let [isOpen, setIsOpen] = useState(true);
   let [inputComment, setInputComment] = useState("");
 
@@ -46,12 +49,13 @@ const TaskDetails = () => {
   const taskDispatch = useTasksDispatch();
 
   const selectedProject = projectState?.projects.filter(
-    (project) => `${project.id}` === projectID
+    (project) => `${project.id}` === projectID,
   )[0];
 
   const selectedTask = taskListState.projectData.tasks[taskID ?? ""];
   const dispatch = useCommentsDispatch();
   const commentsState = useCommentsState();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -68,7 +72,7 @@ const TaskDetails = () => {
   }, [projectID, taskID]);
 
   const [selectedPerson, setSelectedPerson] = useState(
-    selectedTask.assignedUserName ?? ""
+    selectedTask.assignedUserName ?? "",
   );
   const {
     register,
@@ -84,7 +88,7 @@ const TaskDetails = () => {
   });
 
   if (!selectedProject) {
-    return <>No such Project!</>;
+    return <>{t("noProject")}</>;
   }
 
   function closeModal() {
@@ -94,7 +98,7 @@ const TaskDetails = () => {
 
   const onSubmit: SubmitHandler<TaskFormUpdatePayload> = async (data) => {
     const assignee = memberState?.members?.filter(
-      (member) => member.name === selectedPerson
+      (member) => member.name === selectedPerson,
     )?.[0];
     updateTask(taskDispatch, projectID ?? "", {
       ...selectedTask,
@@ -103,6 +107,7 @@ const TaskDetails = () => {
     });
     closeModal();
   };
+
   const onSubmitComment: SubmitHandler<Inputs> = async () => {
     try {
       addComments(dispatch, projectID ?? "", taskID ?? "", {
@@ -114,6 +119,7 @@ const TaskDetails = () => {
       console.error("Failed to add comment:", error);
     }
   };
+
   return (
     <>
       <Transition appear show={isOpen} as={Fragment}>
@@ -146,16 +152,16 @@ const TaskDetails = () => {
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900"
                   >
-                    Task Details
+                    {t("newTask")}
                   </Dialog.Title>
                   <div className="mt-2">
                     <form onSubmit={handleSubmit(onSubmit)}>
-                      {errors && <span>This field is required</span>}
+                      {errors && <span>{t("fieldRequired")}</span>}
 
                       <input
                         type="text"
                         required
-                        placeholder="Enter title"
+                        placeholder={t("enterTitle")}
                         id="title"
                         {...register("title", { required: true })}
                         className="w-full px-3 py-2 my-4 leading-tight text-gray-700 border rounded-md focus:outline-none focus:border-blue-500 focus:shadow-outline-blue"
@@ -163,7 +169,7 @@ const TaskDetails = () => {
                       <input
                         type="text"
                         required
-                        placeholder="Enter description"
+                        placeholder={t("enterDescription")}
                         id="description"
                         {...register("description", { required: true })}
                         className="w-full px-3 py-2 my-4 leading-tight text-gray-700 border rounded-md focus:outline-none focus:border-blue-500 focus:shadow-outline-blue"
@@ -171,13 +177,13 @@ const TaskDetails = () => {
                       <input
                         type="date"
                         required
-                        placeholder="Enter due date"
+                        placeholder={t("enterDueDate")}
                         id="dueDate"
                         {...register("dueDate", { required: true })}
                         className="w-full px-3 py-2 my-4 leading-tight text-gray-700 border rounded-md focus:outline-none focus:border-blue-500 focus:shadow-outline-blue"
                       />
                       <h3>
-                        <strong>Assignee</strong>
+                        <strong>{t("assignee")}</strong>
                       </h3>
                       <Listbox
                         value={selectedPerson}
@@ -226,14 +232,14 @@ const TaskDetails = () => {
                         type="submit"
                         className="inline-flex justify-center px-4 py-2 mr-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                       >
-                        Update
+                        {t("submit")}
                       </button>
                       <button
-                        type="submit"
+                        type="button"
                         onClick={closeModal}
                         className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                       >
-                        Cancel
+                        {t("cancel")}
                       </button>
                     </form>
 
@@ -242,12 +248,12 @@ const TaskDetails = () => {
                       className="mt-5"
                     >
                       <h3 className="mb-3 font-serif text-xl font-semibold ">
-                        Comment Details
+                        {t("newComment")}
                       </h3>
 
                       <input
                         type="text"
-                        placeholder="Enter comment here"
+                        placeholder={t("enterComment")}
                         id="commentBox"
                         required
                         onChange={(e) => setInputComment(e.target.value)}
@@ -259,15 +265,19 @@ const TaskDetails = () => {
                         id="addCommentBtn"
                         className="inline-flex justify-center px-4 py-2 mr-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                       >
-                        Add comment
+                        {t("addComment")}
                       </button>
                     </form>
 
                     <div className="mt-2 space-y-4">
                       {commentsState.isLoading ? (
-                        <p>Loading comments...</p>
+                        <p>{t("loading")}</p>
                       ) : commentsState.isError ? (
-                        <p>Error: {commentsState.errorMessage}</p>
+                        <p>
+                          {t("error", {
+                            errorMessage: commentsState.errorMessage,
+                          })}
+                        </p>
                       ) : (
                         <div className="mt-2 space-y-4">
                           {commentsState.data.map((comment) => (
@@ -279,19 +289,20 @@ const TaskDetails = () => {
                                 {comment.User && (
                                   <>
                                     <p className="m-2">
-                                      <strong>Name:</strong> {comment.User.name}
+                                      <strong>{t("name")}:</strong>{" "}
+                                      {comment.User.name}
                                     </p>
                                     <p className="m-2">
-                                      <strong>Timestamp:</strong>{" "}
+                                      <strong>{t("timestamp")}:</strong>{" "}
                                       {comment.createdAt &&
                                         new Date(
-                                          comment.createdAt
+                                          comment.createdAt,
                                         ).toLocaleString()}
                                     </p>
                                   </>
                                 )}
                                 <p className="m-2">
-                                  <strong>Comment:</strong>{" "}
+                                  <strong>{t("comment")}:</strong>{" "}
                                   {comment.description}
                                 </p>
                               </div>

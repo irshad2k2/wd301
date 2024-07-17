@@ -3,13 +3,12 @@ import {
   CommentListAvailableAction,
   CommentListState,
   CommentActions,
-  initialStateComment
+  initialStateComment,
 } from "./types";
-
 
 export const commentReducer: Reducer<CommentListState, CommentActions> = (
   state = initialStateComment,
-  action
+  action,
 ) => {
   console.log(`HI this Type${action.type}`);
   switch (action.type) {
@@ -21,7 +20,7 @@ export const commentReducer: Reducer<CommentListState, CommentActions> = (
       return {
         ...state,
         isLoading: false,
-        data:  action.payload ,
+        data: action.payload,
       };
     case CommentListAvailableAction.FETCH_COMMENT_FAILURE:
       return {
