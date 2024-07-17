@@ -39,6 +39,12 @@ const Task = forwardRef<
     }
   );
 
+  const dueDate = task.dueDate ? new Date(task.dueDate) : null;
+  const formattedDate =
+    dueDate && !isNaN(dueDate.getTime())
+      ? dateFormatter.format(dueDate)
+      : t("noDueDate"); // Provide a fallback translation key for no due date
+
   return (
     <div ref={ref} {...props} className="flex m-2">
       <Link
@@ -48,9 +54,7 @@ const Task = forwardRef<
         <div className="sm:ml-4 sm:flex sm:w-full sm:justify-between">
           <div>
             <h2 className="my-1 text-base font-bold">{task.title}</h2>
-            <p className="text-sm text-slate-500">
-              {dateFormatter.format(new Date(task.dueDate))}
-            </p>
+            <p className="text-sm text-slate-500">{formattedDate}</p>
             <p className="text-sm text-slate-500">
               {t("description")}: {task.description}
             </p>
