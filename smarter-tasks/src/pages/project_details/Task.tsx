@@ -36,7 +36,7 @@ const Task = forwardRef<
       year: "numeric",
       month: "long",
       day: "numeric",
-    },
+    }
   );
 
   return (
@@ -85,7 +85,7 @@ const Container = (
   props: React.PropsWithChildren<{
     task: TaskDetails;
     index: number;
-  }>,
+  }>
 ) => {
   return (
     <Draggable index={props.index} draggableId={`${props.task.id}`}>
